@@ -1,0 +1,31 @@
+﻿@model _301236921_Garcia_Lab3.Models.User
+@{
+    ViewData["Title"] = "Registration Page";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Register</h5>
+                    <form id="registration-form" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Choose a Username:</label>
+                            <input type="text" class="form-control" id="username" asp-for="Username" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Create a Password:</label>
+                            <input type="password" class="form-control" id="password" asp-for="Password" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="reset" class="btn btn-secondary">Clear</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

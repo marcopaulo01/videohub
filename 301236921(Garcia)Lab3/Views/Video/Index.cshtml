@@ -1,0 +1,123 @@
+﻿@model List<Amazon.DynamoDBv2.DocumentModel.Document>
+
+<div class="container mt-4">
+
+    <div class="alert alert-info d-flex justify-content-between align-items-center" role="alert">
+        <span>Welcome, <strong>@ViewData["Username"]</strong>!</span>
+        <a class="btn btn-danger ms-2" href="/login">Logout</a>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <label for="genreFilter" class="col-form-label">Filter by Genre:</label>
+            <select id="genreFilter" class="form-select" onchange="filterByGenre(this.value)">
+                <option value="">All Genres</option>
+                <option value="Action">Action</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Drama">Drama</option>
+                <option value="Horror">Horror</option>
+                <option value="Romance">Romance</option>
+                <option value="Sci-Fi">Sci-Fi</option>
+                <option value="Other Genre">Other Genre</option>
+            </select>
+        </div>
+        <div>
+            <a class="btn btn-success" asp-controller="Video" asp-action="Add" asp-route-userId="@ViewData["UserId"]">Add</a>
+        </div>
+    </div>
+
+    <table id="myTable" class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Title</th>
+                <th class ="d-none">Movie Id</th>
+                <th>Release Time</th>
+                <th class="d-none">User Id</th>
+                <th>Owner</th>
+                <th>Genre</th>
+                <th>Download</th>
+                <th>Edit/Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var result in Model)
+            {
+                <tr>
+                    @foreach (var attribute in result.GetAttributeNames())
+                    {
+                        if (attribute == "UserID" || attribute == "MovieID")
+                        {
+                            <td class="d-none">@result[attribute]</td>
+                        }
+                        else if (attribute == "Title")
+                        {
+                            <td>
+                                <a href="@Url.Action("Index", "VideoInfo", new { movieId = result["MovieID"], userId = @ViewData["UserId"], title = result["Title"] })">
+                                    @result["Title"]
+                                </a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>@result[attribute]</td>
+                        }
+                    }
+                    <td style="text-align: center;">
+                        <a href="@Url.Action("Download", "Video", new { movieId = result["MovieID"]})" onclick="alert('Downloading!')" class="btn btn-outline-primary" title="Download">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                            </svg>
+                        </a>
+                    </td>
+                    <td style="text-align: center; display: flex; justify-content: center;">
+                        @if (@result["UserID"].ToString().Equals(@ViewData["UserId"].ToString()))
+                        {
+                            <a href="@Url.Action("Edit", "Video", new { movieId = result["MovieID"], userId = ViewData["UserId"] })" class="btn btn-outline-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                </svg>
+                            </a>
+
+                            <form method="post" asp-controller="Video" asp-action="Delete" style="display: inline;">
+                                <input type="hidden" name="movieID" value=" @result["MovieID"]" />
+                                <input type="hidden" name="userId" value="@ViewData["UserId"]" />
+                                <button type="submit" class="btn btn-outline-danger" title="Delete" style="margin-left: 5px; padding: 0;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eraser-fill" viewBox="0 0 16 16">
+                                        <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm.66 11.34L3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z" />
+                                    </svg>
+                                </button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function filterByGenre(genre) {
+        // Get all rows in the table body
+        var table = document.getElementById("myTable");
+        var rows = table.getElementsByTagName("tr");
+
+        // Loop through each row
+        for (var i = 0; i < rows.length; i++) {
+            var genreCell = rows[i].getElementsByTagName("td")[5]; // Assuming Genre is in the sixth column (index 5)
+
+            // If there is a genre cell
+            if (genreCell) {
+                var cellText = genreCell.textContent || genreCell.innerText;
+
+                // Show/hide rows based on the selected genre
+                if (genre === "" || cellText === genre) {
+                    rows[i].style.display = ""; // Show the row
+                } else {
+                    rows[i].style.display = "none"; // Hide the row
+                }
+            }
+        }
+    }
+</script>

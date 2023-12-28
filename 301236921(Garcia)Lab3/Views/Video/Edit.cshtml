@@ -1,0 +1,38 @@
+﻿@model _301236921_Garcia_Lab3.Models.Video
+
+<div class="container mt-5">
+    <form asp-action="Edit" method="post">
+        <h2 class="text-center mb-4">Movie Information Form</h2>
+  
+        <input type="hidden" asp-for="@Model.MovieID" />
+        <input type="hidden" asp-for="@Model.UserID" />
+
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" class="form-control" id="title" asp-for="Title" required>
+        </div>
+
+        <div class="form-group">
+            <label for="director">Owner:</label>
+            <input type="text" class="form-control" id="director" asp-for="Director" required>
+        </div>
+
+        <div class="form-group">
+            <label for="genre">Genre:</label>
+            <select class="form-control" id="genre" asp-for="Genre" required>
+                <option value="" disabled selected>Select a genre</option>
+                <option value="Action">Action</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Drama">Drama</option>
+                <option value="Horror">Horror</option>
+                <option value="Romance">Romance</option>
+                <option value="Sci-Fi">Sci-Fi</option>
+                <option value="Other Genre">Other Genre</option>
+            </select>
+        </div>
+
+        <div class="form-group mt-2">
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+    </form>
+</div>
